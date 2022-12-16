@@ -60,7 +60,7 @@ public class IndexController {
         String rawPassword = user.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword);
         user.setPassword(encPassword);
-        bCryptPasswordEncoder.match
+
         userRepo.save(user);
         return "redirect:/loginForm";
     }
