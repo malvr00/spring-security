@@ -33,7 +33,7 @@ http.authorizeRequests()
         http.csrf().disable();
         http.authorizeRequests()
                 // /user/** 들어오면 인증이 필요하다는 선언
-                .antMatchers("/user/**").authenticated()
+                .antMatchers("/user/**").authenticated()    // 인증만 되면 들어갈 수 있는 주소.
                 // /manager/** login은 했지만 manager나 admin인 권한 만 접속 가능
                 .antMatchers("/manager/**").access("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
                 // /admin/** admin인 권한 만 접속 가능
@@ -43,8 +43,9 @@ http.authorizeRequests()
                 .and()
                 // 권한 필요한 설정 일 경우 login 페이지로 강제 이동 시킴.
                 .formLogin()
-                .loginPage("/loginForm");
-
+                .loginPage("/loginForm")
+                .loginProcessingUrl("/login")  // /login 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인 진행
+                .defaultSuccessUrl("/");
         return http.build();
     }
 
