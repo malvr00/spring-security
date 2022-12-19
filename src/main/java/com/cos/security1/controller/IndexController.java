@@ -3,6 +3,8 @@ package com.cos.security1.controller;
 import com.cos.security1.domain.User;
 import com.cos.security1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,6 +64,21 @@ public class IndexController {
         user.setPassword(encPassword);
         userRepo.save(user);
         return "redirect:/loginForm";
+    }
+
+    // ******************* EnableGlobalMethodSecurity 설정 해야 Secured, PostAuthorize, PreAuthorize 사용 가능 ****************//
+    // 단일 설정 할 때 사용.
+    @Secured("ROLL_ADMIN")
+    @GetMapping("/info")
+    public @ResponseBody String info(){
+        return "정보보기";
+    }
+
+    // 다수 권한 설정 할때 사용
+    @PreAuthorize("hasRole('ROLL_ADMIN') or hasRole('ROLL_MANAGER')")
+    @GetMapping("/data")
+    public @ResponseBody String data(){
+        return "데이터";
     }
 
 }
