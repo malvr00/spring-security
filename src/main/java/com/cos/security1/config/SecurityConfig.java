@@ -1,5 +1,7 @@
 package com.cos.security1.config;
 
+import com.cos.security1.config.oauth.PrincipalOauth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -10,8 +12,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity  // 스프링 시큐리티 필터가 스프링 필터체인에 등록이 됨.
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // 특정 메소드 권한 설정
 public class SecurityConfig {
+
+    private final PrincipalOauth2UserService principalOauth2UserService;
 
     /*
 기존: WebSecurityConfigurerAdapter를 상속하고 configure매소드를 오버라이딩하여 설정하는 방법
@@ -50,7 +55,11 @@ http.authorizeRequests()
                 .defaultSuccessUrl("/")
                 .and()
                 .oauth2Login()
-                .loginPage("/loginForm");   // 구글 로그인이 완료된 두의 후처리가 필요함. ( 구글 로그인 까지는 진행 됨 )
+                .loginPage("/loginForm")   // 구글 로그인이 완료된 두의 후처리가 필요함. ( 구글 로그인 까지는 진행 됨 )
+                // 1. 코드받기(인증), 2. 엑세스토큰(권한), 3. 사용자 프로필 정보, 4. 그 정보를 토대로 회원가입을 자동으로 진행 시키기도함.
+                // Tip. 코드x, (엑세스토큰 + 사용자프로필정보 한번에 받음)
+                .userInfoEndpoint()
+                .userService(principalOauth2UserService);
         return http.build();
     }
 
