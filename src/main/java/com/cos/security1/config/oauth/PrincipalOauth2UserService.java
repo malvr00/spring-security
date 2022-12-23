@@ -21,6 +21,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
     // 구글로 부터 받은 userRequest 데이터에 대한 후처리 함수
+    // 함수 종료 시 @AuthenticationPrincipal 어노테이션이 많들어짐.
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         // registrationId로 어떤 OAuth로 로그인 되있는지 확인 가능

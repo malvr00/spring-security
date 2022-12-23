@@ -20,6 +20,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     // User정보에 username으로 값이 들어와야 매칭이 됨.
     // username으로 들어 오지 않는다면 SecurityConfig(.usernameParameter("username2"))에서 username으로 매칭 되는 값을 따로 설정 해 줘야함
+    // 함수 종료 시 @AuthenticationPrincipal 어노테이션이 많들어짐.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("username : " + username);
