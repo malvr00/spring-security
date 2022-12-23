@@ -63,10 +63,11 @@ http.authorizeRequests()
         return http.build();
     }
 
-    @Bean
-    public BCryptPasswordEncoder encodePwd(){
-        // 프레임워크에서 제공하는 클래스 중 하나로 비밀번호를 암호화하는 데 사용할 수 있는 메서드를 가진 클래스.
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    bean 순환 참조 오류로 주석 처리
+//    public BCryptPasswordEncoder encodePwd(){
+//        // 프레임워크에서 제공하는 클래스 중 하나로 비밀번호를 암호화하는 데 사용할 수 있는 메서드를 가진 클래스.
+//        return new BCryptPasswordEncoder();
+//    }
 
 }

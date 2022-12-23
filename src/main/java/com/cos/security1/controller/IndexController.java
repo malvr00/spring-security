@@ -1,5 +1,6 @@
 package com.cos.security1.controller;
 
+import com.cos.security1.config.app.CustomBCryptPasswordEncoder;
 import com.cos.security1.config.auth.PrincipalDetails;
 import com.cos.security1.domain.User;
 import com.cos.security1.repository.UserRepository;
@@ -22,7 +23,7 @@ public class IndexController {
 
     private final UserRepository userRepo;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CustomBCryptPasswordEncoder customBCryptPasswordEncoder;
 
     @GetMapping("/test/login")
     // authentication DI (의존성 주읩)
@@ -38,6 +39,7 @@ public class IndexController {
         return "세선 정보 확인하기";
     }
 
+    // google class OAuth2User
     @GetMapping("/test/oauth/login")
     public @ResponseBody String testOAuthLogin(Authentication authentication,
                                                @AuthenticationPrincipal OAuth2User oAuth2User2){
@@ -57,7 +59,8 @@ public class IndexController {
     }
 
     @GetMapping("/user")
-    public @ResponseBody String user(){
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        System.out.println("principalDetails = " + principalDetails.getUser());
         return "user";
     }
 
@@ -92,7 +95,7 @@ public class IndexController {
         System.out.println(user);
         user.setRole("ROLE_USER");
         String rawPassword = user.getPassword();
-        String encPassword = bCryptPasswordEncoder.encode(rawPassword);
+        String encPassword = customBCryptPasswordEncoder.encode(rawPassword);
         user.setPassword(encPassword);
         userRepo.save(user);
         return "redirect:/loginForm";
