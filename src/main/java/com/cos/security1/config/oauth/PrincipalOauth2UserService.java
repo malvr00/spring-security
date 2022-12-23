@@ -2,6 +2,9 @@ package com.cos.security1.config.oauth;
 
 import com.cos.security1.config.app.CustomBCryptPasswordEncoder;
 import com.cos.security1.config.auth.PrincipalDetails;
+import com.cos.security1.config.auth.provider.FacebookUserInfo;
+import com.cos.security1.config.auth.provider.GoogleUserInfo;
+import com.cos.security1.config.auth.provider.OAuth2UserInfo;
 import com.cos.security1.domain.User;
 import com.cos.security1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +36,22 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         // 위 내용이 userRequest 정보. userRequest 정보 => loadUser 함수 => 회원 프로필
         System.out.println("getAttributes:" + super.loadUser(userRequest).getAttributes());
 
-        String provider = userRequest.getClientRegistration().getClientId(); // google
-        String providerId = oAuth2User.getAttribute("sub");
+        OAuth2UserInfo oAuth2UserInfo = null;
+        if (userRequest.getClientRegistration().getRegistrationId().equals("google")) {
+            System.out.println("구글 로그인 요청");
+            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+        } else if (userRequest.getClientRegistration().getRegistrationId().equals("facebook")) {
+            System.out.println("페이스북 로그인 요청");
+            oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
+        } else {
+            System.out.println("구글 페이스북만 지원");
+        }
+
+        String provider = oAuth2UserInfo.getProvider();
+        String providerId = oAuth2UserInfo.getProviderId();
         String username = provider+"_"+providerId; // google_12301230123098
         String password = customBCryptPasswordEncoder.encode("겟인데어");
-        String email = oAuth2User.getAttribute("email");
+        String email = oAuth2UserInfo.getEmail();
         String role = "ROLE_USER";
 
         User user = userRepository.findByUsername(username);
